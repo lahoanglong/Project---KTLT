@@ -1,6 +1,24 @@
-#include "meatball.h"
+﻿#include "meatball.h"
 
+//các hàm cho môn học
+Courses::Courses()
+{
+}
 
+Courses::~Courses()
+{
+}
+
+//các hàm cho lớp
+Class::Class()
+{
+}
+
+Class::~Class()
+{
+}
+
+//các hàm quản lý cho admin
 void admin::load_student()
 {
 	ifstream fin;

@@ -3,7 +3,7 @@
 //																	# Need coffee . . .             .
 //																									.
 //																									|
-//	    		'-')7																		  '.  _..._  .'
+//	    		'-')7																		  '. _ ... _  .'
 //		Press F to pray Dead_LINE sun														   .'       '.
 //																						  '-. /           \ .-'
 //																						 _ _  ;  L I N E  ;  _ _

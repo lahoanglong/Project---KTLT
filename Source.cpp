@@ -21,8 +21,5 @@
 
 void main()
 {
-	admin key;
-	key.load_student();
-	key.save_student();
-	_getch();
+	menu();
 }

@@ -6,7 +6,23 @@
 #include "fstream"
 #include "conio.h"
 #include "vector"
+#include "string"
 using namespace std;
+
+//khai báo tất cả các hàm
+void clear();
+
+//lvl 3 staff only
+void classes();
+void courses();
+void Scoreboard();
+void Attendance_list();
+//lvl 2
+void staff_menu();
+void lecturer_menu();
+void student_menu();
+//lvl 1
+void menu();
 
 //cấu trúc thời gian
 struct Time
@@ -50,6 +66,22 @@ struct Course
 	Time End;
 };
 
+//Login
+struct Account
+{
+	string _account;
+	string _password;
+};
+
+class Login
+{
+private:
+	vector <Account> a;
+public:
+	void Load_password();
+	int login_account();
+};
+
 //class quản lý 1 môn của 1 lớp
 class Courses
 {
@@ -65,31 +97,36 @@ private:
 //class quản lý 1 lớp
 class Class
 {
-	public:
-		Class();
-		~Class();
-
-	protected:
-		//vector chứa các thành viên 1 lớp
-		vector<Student>all_classes;
+public:
+	Class();
+	~Class();
+	bool AddStudent(Student a);
+	int GetSize();
+	Student GetStudent(int i);
+protected:
+	//vector chứa các thành viên 1 lớp
+	vector<Student>all_classes;
 };
 
-class admin : public Class
+class control : public Class
 {
-	private:
+private:
 
-		//array chứa được 6 lớp :v
-		Class a[7];
+	//array 1 khóa
+	Class K18[6];
 
-		//giá trị đếm số lượng sv :V
-		int num;
+	//Mảng tên file
+	char file_name[6][10] = { "CLC1.csv","CLC2.csv","CLC3.csv","CLC4.csv","CLC5.csv","CLC6.csv" };
 
-		//lưu header file csv
-		char head[100];
-	public:
-		//sửa lại hàm load với save nha :V
-		void load_student();
-		void save_student();
+	//giá trị đếm số lượng sv :V
+	int num;
+
+	//lưu header file csv
+	char head[100];
+public:
+	//sửa lại hàm load với save nha :V
+	void load_student();
+	void save_student();
 };
 
 #endif

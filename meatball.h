@@ -1,4 +1,4 @@
-﻿#ifndef _MEATBALL_H_
+#ifndef _MEATBALL_H_
 #define _CRT_SECURE_NO_WARNINGS
 #define _MEATBALL_H_
 
@@ -72,28 +72,66 @@ struct Account
 	string _account;
 	string _password;
 };
-
+struct NodeAccount
+{
+	Account x;
+	NodeAccount* next;
+};
+struct ListAccount
+{
+	NodeAccount* head;
+	NodeAccount* tail;
+};
 class Login
 {
 private:
-	vector <Account> a;
+	ListAccount* a = new ListAccount;
 public:
+	Login();
+	NodeAccount* CreateNodeAccount(Account a);
+	void InsertTailAccount(NodeAccount* p);
+	void DeleteTailPassword();
+	int GetSizePassword();
+	Account GetPassword(int i);
 	void Load_password();
 	int login_account();
 };
 
 //class quản lý 1 môn của 1 lớp
+struct NodeCourses
+{
+	Course x;
+	NodeCourses* next;
+};
+struct ListCourses
+{
+	NodeCourses* head;
+	NodeCourses* tail;
+};
 class Courses
 {
 public:
 	Courses();
 	~Courses();
-
+	NodeCourses* CreateNodeCourses(Course a);
+	void InsertTailCourses(NodeCourses* p);
+	int GetSizeCourses();
+	void DeleteTailCourses();
+	Course GetCourses(int i);
 private:
 	//vector chứa các môn của từng lớp
-	vector<Course>all_courses;
+	ListCourses* all_courses;
 };
-
+struct NodeClass
+{
+	Student x;
+	NodeClass* next;
+};
+struct ListClass
+{
+	NodeClass* head;
+	NodeClass* tail;
+};
 //class quản lý 1 lớp
 class Class
 {
@@ -103,9 +141,13 @@ public:
 	bool AddStudent(Student a);
 	int GetSize();
 	Student GetStudent(int i);
+	void ChangeStudent(Student a, int i);
+	void DeleteStudent(int i);
 protected:
 	//vector chứa các thành viên 1 lớp
-	vector<Student>all_classes;
+	ListClass* all_classes = new ListClass;
+	NodeClass* CreatNodeClass(Student a);
+	void InsertTail(NodeClass* p);
 };
 
 class control : public Class
@@ -127,6 +169,11 @@ public:
 	//sửa lại hàm load với save nha :V
 	void load_student();
 	void save_student();
+	void DataStudentAdd();
+	void EditStudent();
+	void RemoveStudent();
+	void ChangeClass();
+	void List_Classes();
+	void List_Student();
 };
-
 #endif

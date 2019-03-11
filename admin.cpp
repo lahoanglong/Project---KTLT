@@ -50,11 +50,11 @@ void Login::DeleteTailPassword()
 	p->next = NULL;
 	delete t;
 }
-Account Login::GetPassword(int i)
+Account Login::GetAccount(int i)
 {
 	NodeAccount* p = a->head;
 	int number = 0;
-	while (p->next != NULL)
+	while (p != NULL)
 	{
 		if (number == i)
 		{
@@ -65,6 +65,43 @@ Account Login::GetPassword(int i)
 	}
 	return p->x;
 }
+void Login::Change_password()
+{
+	char new_password[10], password_cmp[10];
+	do
+	{
+		cout << "Enter your new password: ";
+		cin >> new_password;
+		cout << "Confirm password: ";
+		cin >> password_cmp;
+		clear();
+	} while (_stricmp(new_password, password_cmp));
+	NodeAccount* p = a->head;
+	int number = 0;
+	while (p != NULL)
+	{
+		if (number == token)
+		{
+			p->x._password = new_password;
+			break;
+		}
+		p = p->next;
+		number++;
+	}
+	Save_data();
+}
+void Login::Save_data()
+{
+	ofstream fout;
+	fout.open("password.csv");
+	fout << "account,password" << endl;
+	for (int i = 0; i < GetSizePassword(); i++)
+	{
+		Account a = GetAccount(i);
+		fout << a._account << "," << a._password << endl;
+	}
+	fout.close();
+}
 int Login::login_account()
 {
 	char account_[10], password_[10]; //biến nhập tài khoản
@@ -72,11 +109,12 @@ int Login::login_account()
 	cin >> account_;
 	for (int i = 0; i < GetSizePassword(); i++)
 	{
-		if (account_ == GetPassword(i)._account)
+		if (account_ == GetAccount(i)._account)
 		{
+			token = i;
 			cout << "Please input your password:";
 			cin >> password_;
-			if (password_ == GetPassword(i)._password)
+			if (password_ == GetAccount(i)._password)
 			{
 				if (_stricmp(account_, "99999") == -1)
 				{
@@ -168,7 +206,7 @@ Course Courses::GetCourses(int i)
 {
 	NodeCourses* p = all_courses->head;
 	int number = 0;
-	while (p->next != NULL)
+	while (p != NULL)
 	{
 		if (number == i)
 		{
@@ -233,7 +271,7 @@ void Class::ChangeStudent(Student a, int i)
 {
 	NodeClass* p = all_classes->head;
 	int number = 0;
-	while (p->next != NULL)
+	while (p != NULL)
 	{
 		if (number == i)
 		{
@@ -298,6 +336,20 @@ void control::DataStudentAdd()
 		cout << "students were add to that class";
 	}
 }
+int control::FindStudent(int SttClass,int id)
+{
+	for (int i = 0; i < K18[SttClass].GetSize(); i++)
+	{
+		Student a;
+		a = K18[SttClass].GetStudent(i);
+		if (id == a.student_ID)
+		{
+			id = i;
+			break;
+		}
+	}
+	return -1;
+}
 void control::EditStudent()
 {
 	char s[10]; //chuỗi để nhập tên lớp vào
@@ -327,17 +379,15 @@ void control::EditStudent()
 	int c;
 	cout << "Please input student ID you want look for:";
 	cin >> c;
+	int index;
 	for (int i = 0; i < K18[b].GetSize(); i++)
 	{
-		a = K18[b].GetStudent(i);
-		if (c == a.student_ID)
-		{
-			c = i;
+		index = FindStudent(b, c);
+		if (index > 0)
 			break;
-		}
 	}
 	a = InputStudent();
-	K18[b].ChangeStudent(a, c);
+	K18[b].ChangeStudent(a, index);
 }
 void control::RemoveStudent()
 {
@@ -364,16 +414,14 @@ void control::RemoveStudent()
 	int c;
 	cout << "Please input student ID you want remove:";
 	cin >> c;
+	int index;
 	for (int i = 0; i < K18[b].GetSize(); i++)
 	{
-		a = K18[b].GetStudent(i);
-		if (c == a.student_ID)
-		{
-			c = i;
+		index = FindStudent(b, c);
+		if (index > 0)
 			break;
-		}
 	}
-	K18[b].DeleteStudent(c);
+	K18[b].DeleteStudent(index);
 }
 bool Class::AddStudent(Student a)
 {
@@ -410,7 +458,7 @@ Student Class::GetStudent(int i)
 {
 	NodeClass* p = all_classes->head;
 	int number = 0;
-	while (p->next != NULL)
+	while (p != NULL)
 	{
 		if (number == i)
 		{
@@ -670,7 +718,9 @@ void courses()
 void Scoreboard()
 {
 	int ans;
-	cout << "List:\n 1. Search and view scoreboard of a course\n 2. Export a scoreboard to a csv file.";
+	cout << "List:" << endl;
+	cout << " 1. Search and view scoreboard of a course" << endl;
+	cout << " 2. Export a scoreboard to a csv file." << endl;
 	cin >> ans;
 	switch (ans)
 	{
@@ -683,7 +733,10 @@ void Scoreboard()
 void Attendance_list()
 {
 	int ans;
-	cout << "List:\n 1. Search and view attendance list of a course\n 2. Export a attendance list to a csv file.";
+	cout << "List:" << endl;
+	cout << " 1. Search and view attendance list of a course" << endl;
+	cout << " 2. Export a attendance list to a csv file." << endl;
+
 	cin >> ans;
 	switch (ans)
 	{
@@ -694,14 +747,16 @@ void Attendance_list()
 	}
 }
 
-void staff_menu()
+// Menu
+void staff_menu(Login &log_in)
 {
 	int ans;
-	cout << "List: \n";
+	cout << "List:" << endl;
 	cout << " 1. class" << endl;
 	cout << " 2. course" << endl;
 	cout << " 3. Scoreboard" << endl;
 	cout << " 4. Attendance_list" << endl;
+	cout << " 5. Change pasword" << endl;
 	cin >> ans;
 	switch (ans)
 	{
@@ -717,13 +772,25 @@ void staff_menu()
 	case 4:
 		Attendance_list();
 		break;
+	case 5:
+		log_in.Change_password();
+		break;
 	}
 }
 
-void lecturer_menu()
+void lecturer_menu(Login &log_in)
 {
 	int ans;
-	cout << "List:\n 1. View list of courses in the current semester\n 2. View list of students of a course\n 3. View attendance list of a course\n 4. Edit an attendance\n 5. Import scoreboard of a course\n 6. Edit grade of a student\n 7. View a scoreboard\nwhat do you want to do : ";
+	cout << "List:" << endl;
+	cout << " 1. View list of courses in the current semester" << endl;
+	cout << " 2. View list of students of a course" << endl;
+	cout << " 3. View attendance list of a course" << endl;
+	cout << " 4. Edit an attendance" << endl;
+	cout << " 5. Import scoreboard of a course" << endl;
+	cout << " 6. Edit grade of a student" << endl;
+	cout << " 7. View a scoreboard" << endl;
+	cout << " 8. Change pasword" << endl;
+	cout << "what do you want to do : ";
 	cin >> ans;
 	switch (ans)
 	{
@@ -741,13 +808,22 @@ void lecturer_menu()
 		break;
 	case 7:
 		break;
+	case 8:
+		log_in.Change_password();
+		break;
 	}
 }
 
-void student_menu()
+void student_menu(Login &log_in)
 {
 	int ans;
-	cout << "List:\n 1. Check-in\n 2. View check - in result\n 3. View schedules\n 4. View your scores of a course.\nwhat do you want to do: ";
+	cout << "List:" << endl;
+	cout << " 1. Check - in" << endl;
+	cout << " 2. View check - in result" << endl;
+	cout << " 3. View schedules" << endl;
+	cout << " 4. View your scores of a course." << endl;
+	cout << " 5. Change pasword" << endl;
+	cout << "what do you want to do: ";
 	cin >> ans;
 	switch (ans)
 	{
@@ -758,6 +834,9 @@ void student_menu()
 	case 3:
 		break;
 	case 4:
+		break;
+	case 5:
+		log_in.Change_password();
 		break;
 	}
 }
@@ -783,13 +862,13 @@ void menu()
 		switch (key)
 		{
 		case 0:
-			staff_menu();
+			staff_menu(log_in);
 			break;
 		case 1:
-			lecturer_menu();
+			lecturer_menu(log_in);
 			break;
 		case -1:
-			student_menu();
+			student_menu(log_in);
 			break;
 		}
 		break;

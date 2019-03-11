@@ -18,9 +18,9 @@ void courses();
 void Scoreboard();
 void Attendance_list();
 //lvl 2
-void staff_menu();
-void lecturer_menu();
-void student_menu();
+void staff_menu(Login &log_in);
+void lecturer_menu(Login &log_in);
+void student_menu(Login &log_in);
 //lvl 1
 void menu();
 
@@ -86,15 +86,18 @@ class Login
 {
 private:
 	ListAccount* a = new ListAccount;
+	int token;
 public:
 	Login();
 	NodeAccount* CreateNodeAccount(Account a);
 	void InsertTailAccount(NodeAccount* p);
 	void DeleteTailPassword();
 	int GetSizePassword();
-	Account GetPassword(int i);
+	Account GetAccount(int i);
 	void Load_password();
 	int login_account();
+	void Save_data();
+	void Change_password();
 };
 
 //class quản lý 1 môn của 1 lớp
@@ -171,6 +174,7 @@ public:
 	void save_student();
 	void DataStudentAdd();
 	void EditStudent();
+	int FindStudent(int SttClass, int c);
 	void RemoveStudent();
 	void ChangeClass();
 	void List_Classes();
